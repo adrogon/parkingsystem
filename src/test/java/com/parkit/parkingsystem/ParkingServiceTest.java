@@ -10,11 +10,14 @@ import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -34,10 +37,11 @@ public class ParkingServiceTest {
     private void setUpPerTest() {
         try {
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+            LocalDateTime inTime = LocalDateTime.now();
 
             ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
             Ticket ticket = new Ticket();
-            ticket.setInTime(new Date(System.currentTimeMillis() - (60*60*1000)));
+            ticket.setInTime(inTime.minusMinutes(60));
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
             when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
@@ -56,6 +60,39 @@ public class ParkingServiceTest {
     public void processExitingVehicleTest(){
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+    }
+
+    @Test
+    public void processIncomingRegularVehicleTest() {
+        Ticket ticket = new Ticket();
+        ticket.setInTime(LocalDateTime.now().minusHours(1));
+        ticket.setVehicleRegNumber("ABCDEF");
+
+        when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+        parkingService.processIncomingVehicle();
+        verify(ticketDAO, Mockito.times( 1)).getTicket(anyString());
+    }
+
+    @Test
+    public void processExitingRegularVehicleTest(){
+        List<Ticket> tickets = new ArrayList<Ticket>();
+
+        Ticket ticket = new Ticket();
+        ticket.setInTime(LocalDateTime.now().minusHours(1));
+        ticket.setVehicleRegNumber("ABCDEF");
+        tickets.add(ticket);
+
+        Ticket ticketBis = new Ticket();
+        ticket.setInTime(LocalDateTime.now().minusHours(1));
+        ticket.setVehicleRegNumber("ABCDEF");
+        tickets.add(ticketBis);
+
+        when(ticketDAO.getTickets(anyString())).thenReturn(tickets);
+
+        parkingService.processExitingVehicle();
+        verify(ticketDAO, Mockito.times(1)).getTickets(anyString());
+        Ticket ticketRegular = ticketDAO.getTicket("ABCDEF");
+        assertEquals( 0.7125, ticketRegular.getPrice());
     }
 
 }
