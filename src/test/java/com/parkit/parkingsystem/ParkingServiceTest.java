@@ -93,6 +93,7 @@ public class ParkingServiceTest {
         verify(ticketDAO, Mockito.times(1)).getTickets(anyString());
         Ticket ticketRegular = ticketDAO.getTicket("ABCDEF");
         assertEquals( 0.7125, ticketRegular.getPrice());
+
     }
 
 }
