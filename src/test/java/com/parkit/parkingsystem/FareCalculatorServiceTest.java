@@ -8,8 +8,12 @@ import com.parkit.parkingsystem.service.FareCalculatorService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -31,7 +35,7 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareCar() throws Exception {
-        LocalDateTime inTime    = LocalDateTime.now();
+        LocalDateTime inTime    = LocalDateTime.now().minusMinutes(90);
         LocalDateTime outTime   = LocalDateTime.now();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
@@ -44,7 +48,7 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareBike() throws Exception{
-        LocalDateTime inTime    = LocalDateTime.now();
+        LocalDateTime inTime    = LocalDateTime.now().minusMinutes(90);
         LocalDateTime outTime   = LocalDateTime.now();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
 
@@ -69,7 +73,7 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareBikeWithFutureInTime(){
-        LocalDateTime inTime    = LocalDateTime.now();
+        LocalDateTime inTime    = LocalDateTime.now().plusMinutes(60);
         LocalDateTime outTime   = LocalDateTime.now();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
 

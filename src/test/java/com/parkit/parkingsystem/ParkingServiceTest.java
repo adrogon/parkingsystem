@@ -5,8 +5,10 @@ import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
+import com.parkit.parkingsystem.service.FareCalculatorService;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,9 +21,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+
 public class ParkingServiceTest {
 
     private static ParkingService parkingService;
@@ -34,7 +38,7 @@ public class ParkingServiceTest {
     private static TicketDAO ticketDAO;
 
     @BeforeEach
-    private void setUpPerTest() {
+    void setUpPerTest() throws Exception {
         try {
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
             LocalDateTime inTime = LocalDateTime.now();
@@ -46,7 +50,6 @@ public class ParkingServiceTest {
             ticket.setVehicleRegNumber("ABCDEF");
             when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
             when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-
             when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -70,7 +73,7 @@ public class ParkingServiceTest {
 
         when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
         parkingService.processIncomingVehicle();
-        verify(ticketDAO, Mockito.times( 1)).getTicket(anyString());
+        verify(ticketDAO, Mockito.times(1)).getTicket(anyString());
     }
 
     @Test
@@ -92,7 +95,7 @@ public class ParkingServiceTest {
         parkingService.processExitingVehicle();
         verify(ticketDAO, Mockito.times(1)).getTickets(anyString());
         Ticket ticketRegular = ticketDAO.getTicket("ABCDEF");
-        assertEquals( 0.7125, ticketRegular.getPrice());
+        Assertions.assertEquals( 0.7125, ticketRegular.getPrice());
 
     }
 

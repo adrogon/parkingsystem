@@ -9,8 +9,6 @@ import java.time.Duration;
 
 public class FareCalculatorService {
 
-    final static double HALF_HOUR = 0.5;
-
     public void calculateFare(Ticket ticket){
 
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime())) ){
@@ -25,12 +23,12 @@ public class FareCalculatorService {
 
         switch (ticket.getParkingSpot().getParkingType()){
             case CAR: {
-                double price = (duration < HALF_HOUR) ? 0: (duration - HALF_HOUR) * Fare.CAR_RATE_PER_HOUR;
+                double price = (duration < 0.5) ? 0: (duration - 0.5) * Fare.CAR_RATE_PER_HOUR;
                 ticket.setPrice(price);
                 break;
             }
             case BIKE: {
-                double price = (duration < HALF_HOUR) ? 0: (duration - HALF_HOUR) * Fare.BIKE_RATE_PER_HOUR;
+                double price = (duration < 0.5) ? 0: (duration - 0.5) * Fare.BIKE_RATE_PER_HOUR;
                 ticket.setPrice(price);
                 break;
             }
