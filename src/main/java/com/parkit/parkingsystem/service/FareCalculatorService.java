@@ -6,6 +6,9 @@ import com.parkit.parkingsystem.model.Ticket;
 import java.time.LocalDateTime;
 import java.time.Duration;
 
+import static com.parkit.parkingsystem.constants.Fare.FREE_HALF_HOUR;
+import static com.parkit.parkingsystem.constants.Fare.SIXTY_MINUTES;
+
 
 public class FareCalculatorService {
 
@@ -15,20 +18,20 @@ public class FareCalculatorService {
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
 
-            LocalDateTime inTime = ticket.getInTime();
-            LocalDateTime outTime = ticket.getOutTime();
+        LocalDateTime inTime = ticket.getInTime();
+        LocalDateTime outTime = ticket.getOutTime();
 
-            Duration d = Duration.between(inTime, outTime);
-            double duration = (double) d.toMinutes() / 60;
+        Duration d = Duration.between(inTime, outTime);
+        double duration = (double) d.toMinutes() / SIXTY_MINUTES;
 
         switch (ticket.getParkingSpot().getParkingType()){
             case CAR: {
-                double price = (duration < 0.5) ? 0: (duration - 0.5) * Fare.CAR_RATE_PER_HOUR;
+                double price = (duration < FREE_HALF_HOUR) ? 0: (duration - FREE_HALF_HOUR) * Fare.CAR_RATE_PER_HOUR/SIXTY_MINUTES;
                 ticket.setPrice(price);
                 break;
             }
             case BIKE: {
-                double price = (duration < 0.5) ? 0: (duration - 0.5) * Fare.BIKE_RATE_PER_HOUR;
+                double price = (duration < FREE_HALF_HOUR) ? 0: (duration - FREE_HALF_HOUR) * Fare.BIKE_RATE_PER_HOUR/SIXTY_MINUTES;
                 ticket.setPrice(price);
                 break;
             }

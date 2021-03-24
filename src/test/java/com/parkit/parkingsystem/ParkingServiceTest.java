@@ -16,11 +16,11 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.lang.reflect.InvocationTargetException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 
 import static org.mockito.Mockito.*;
 
@@ -38,9 +38,9 @@ public class ParkingServiceTest {
     private static TicketDAO ticketDAO;
 
     @BeforeEach
-    void setUpPerTest() throws Exception {
+    private void setUpPerTest() throws Exception {
         try {
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+            lenient().when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
             LocalDateTime inTime = LocalDateTime.now();
 
             ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
@@ -48,9 +48,9 @@ public class ParkingServiceTest {
             ticket.setInTime(inTime.minusMinutes(60));
             ticket.setParkingSpot(parkingSpot);
             ticket.setVehicleRegNumber("ABCDEF");
-            when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-            when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-            when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+            lenient().when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+            lenient().when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+            lenient().when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
 
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class ParkingServiceTest {
         ticket.setInTime(LocalDateTime.now().minusHours(1));
         ticket.setVehicleRegNumber("ABCDEF");
 
-        when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+        lenient().when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
         parkingService.processIncomingVehicle();
         verify(ticketDAO, Mockito.times(1)).getTicket(anyString());
     }
@@ -90,7 +90,7 @@ public class ParkingServiceTest {
         ticket.setVehicleRegNumber("ABCDEF");
         tickets.add(ticketBis);
 
-        when(ticketDAO.getTickets(anyString())).thenReturn(tickets);
+        lenient().when(ticketDAO.getTickets(anyString())).thenReturn(tickets);
 
         parkingService.processExitingVehicle();
         verify(ticketDAO, Mockito.times(1)).getTickets(anyString());

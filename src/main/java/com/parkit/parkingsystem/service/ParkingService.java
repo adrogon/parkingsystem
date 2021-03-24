@@ -13,6 +13,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.parkit.parkingsystem.constants.Fare.REGULAR_DISCOUNT;
+
 public class ParkingService {
 
     private static final Logger logger = LogManager.getLogger("ParkingService");
@@ -51,12 +53,13 @@ public class ParkingService {
                 ticketDAO.saveTicket(ticket);
 
                 //Asking if the vehicleRegNumber is already in the DB
-                if(regularTicket != null)
+                if(regularTicket != null) {
                     System.out.println("Welcome back! As a recurring of our parking lot, you benefit from a 5% discount.");
 
-                System.out.println("Generated Ticket and saved in DB");
-                System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
-                System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
+                    System.out.println("Generated Ticket and saved in DB");
+                    System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
+                    System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
+                }
             }
         }catch(Exception e){
             logger.error("Unable to process incoming vehicle",e);
@@ -68,6 +71,7 @@ public class ParkingService {
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
 
+    @SuppressWarnings("UnusedAssignment")
     public ParkingSpot getNextParkingNumberIfAvailable(){
         int parkingNumber = 0;
         ParkingSpot parkingSpot = null;
@@ -117,7 +121,7 @@ public class ParkingService {
 
             //If regular client, apply the discount
             if(tickets.size() > 1) {
-                double ticketPrice = ticket.getPrice() - (ticket.getPrice() * 0.05);
+                double ticketPrice = ticket.getPrice() - (ticket.getPrice() * REGULAR_DISCOUNT);
                 ticket.setPrice(ticketPrice);
             }
 

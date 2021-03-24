@@ -16,6 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 public class FareCalculatorServiceTest {
@@ -124,7 +125,7 @@ public class FareCalculatorServiceTest {
 
     @Test
     public void calculateFareCarWithMoreThanADayParkingTime() throws Exception {
-        LocalDateTime inTime = LocalDateTime.now().minusHours(24);
+        LocalDateTime inTime = LocalDateTime.now().minusHours(25);
         LocalDateTime outTime = LocalDateTime.now();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
 
@@ -132,7 +133,7 @@ public class FareCalculatorServiceTest {
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
-        assertEquals( (23.5 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
+        assertEquals( (24.5 * Fare.CAR_RATE_PER_HOUR) , ticket.getPrice());
     }
 
 }
