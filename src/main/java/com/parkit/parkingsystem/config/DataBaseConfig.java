@@ -14,7 +14,7 @@ public class DataBaseConfig {
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
-                "Sunbrith", "rootroot");
+                "Sunbrith", "");
     }
 
     public void closeConnection(Connection con){
