@@ -22,7 +22,7 @@ public class FareCalculatorService {
         LocalDateTime outTime = ticket.getOutTime();
 
         Duration d = Duration.between(inTime, outTime);
-        double duration = (double) d.toMinutes() / SIXTY_MINUTES;
+        double duration = (double) d.toMinutes();
 
         switch (ticket.getParkingSpot().getParkingType()){
             case CAR: {
